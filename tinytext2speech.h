@@ -1,11 +1,14 @@
+// Developed by David Amador
+// www.twitter.com/DJ_Link
+
 #ifndef TINY_TEXT_2_SPEECH_H
 #define TINY_TEXT_2_SPEECH_H
 
+//Wrapping Win code to add MacOS later
 #if defined(_WIN32)
 #define TT2S_USING_WNDOWS
-#endif
-
 #include <sapi.h>
+#endif
 
 namespace ttspeech
 {
@@ -14,43 +17,49 @@ namespace ttspeech
 	public:
 		Speaker()
 		{
+#if defined(TT2S_USING_WNDOWS)
 			if (FAILED(CoInitialize(nullptr)))
 			{
 				printf("Error to initialize COM");
 			}
 
-			const HRESULT hr = CoCreateInstance(CLSID_SpVoice, nullptr, CLSCTX_ALL, IID_ISpVoice, (void**)& _voice);
+			const HRESULT hr = CoCreateInstance(CLSID_SpVoice, nullptr, CLSCTX_ALL, IID_ISpVoice, (void**)&_voice);
 			if (FAILED(hr))
 			{
 				printf("Error to CoCreateInstance ISpVoice");
 			}
 
 			_initialized = SUCCEEDED(hr);
+#endif
 		}
 
 		~Speaker()
 		{
+#if defined(TT2S_USING_WNDOWS)
 			if (_voice)
 			{
 				_voice->Release();
 			}
 			::CoUninitialize();
+#endif
 		}
 
 	public:
-		void speak(const std::string& text)
+		void speak(const std::string& text) const
 		{
-			if (!_initialized || text.empty())
+			if (!_initialized)
 			{
 				return;
 			}
 
+#if defined(TT2S_USING_WNDOWS)
 			ULONG stream_number;
 			const HRESULT hr = _voice->Speak(string2ws(text).c_str(), SPF_IS_NOT_XML | SPF_ASYNC | SPF_PURGEBEFORESPEAK, &stream_number);
 			if (FAILED(hr))
 			{
-
+				//TODO: Log or info
 			}
+#endif
 		}
 
 #if defined(TT2S_USING_WNDOWS)
@@ -68,7 +77,9 @@ namespace ttspeech
 #endif
 
 	private:
+#if defined(TT2S_USING_WNDOWS)
 		ISpVoice* _voice = nullptr;
+#endif
 		bool _initialized = false;
 	};
 }
