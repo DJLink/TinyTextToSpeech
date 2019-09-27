@@ -19,6 +19,8 @@ speaker.speak("Hello world!");
 ## Sample
 A small command line application is provided in VS2019 to test.
 
+![alt text](https://github.com/DJLink/TinyTextToSpeech/raw/master/sample.png "Testing")
+
 
 ## Why?
 
