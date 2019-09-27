@@ -10,12 +10,13 @@ int main()
 	// Text speaker
 	ttspeech::Speaker speaker;
 
-    const std::string text = "Hello there, I'm text to speech!";
-	
-	speaker.speak(text);
+	speaker.speak("Hello there, I'm text to speech!");
 
+	char input[100];
 	do
 	{
-		std::cout << '\n' << "Press a key to continue...";
-	} while (std::cin.get() != '\n');
+		std::cout << "Type text to speak: ";
+		std::cin.getline(input, sizeof(input));
+		speaker.speak(input);
+	} while (true);
 }
